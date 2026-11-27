@@ -2,7 +2,7 @@
 
 Back to the [README](../README.md).
 
-On touch screens, the 3D view shows a movement pad on the left and camera arrows on the right. Hold a direction to walk or turn, and combine fingers to move and look together. **Usar** interacts (E), and **Saltar** jumps (Space). Dragging the scene still looks around. Controls release when a finger is lifted or cancelled, the app loses focus, or a window opens. They hide while a window is open or you are typing.
+On touch screens, the 3D view shows translucent game controls. Drag the left joystick to walk, including diagonally, and the right joystick to turn or look up and down. Slide between directions without lifting your thumb; releasing a joystick returns it to neutral. Use both thumbs to move and look together. **Usar** interacts (E), and **Saltar** jumps (Space). Dragging the scene still looks around. Controls release when a finger is lifted or cancelled, the app loses focus, or a window opens. They hide while a window is open or you are typing.
 
 | Key | Action |
 | --- | --- |

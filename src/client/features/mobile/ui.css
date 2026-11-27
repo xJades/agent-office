@@ -1,6 +1,8 @@
 #hud > .mobile-controls {
+  --game-line: rgb(255 255 255 / .45);
+  --game-surface: rgb(24 27 40 / .28);
   position: absolute;
-  inset: auto max(10px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  inset: auto max(18px, env(safe-area-inset-right)) max(22px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -9,38 +11,72 @@
   -webkit-user-select: none;
 }
 #hud > .mobile-controls[hidden] { display: none; }
-.mobile-pad { display: grid; grid-template: repeat(2, 46px) / repeat(3, 46px); gap: 4px; }
-.mobile-right { display: grid; gap: 8px; }
-.mobile-actions { display: flex; justify-content: flex-end; gap: 6px; }
-.mobile-controls .mobile-button {
-  display: grid;
-  place-items: center;
-  min-width: 46px;
-  min-height: 46px;
-  padding: 0 8px;
-  border: 2px solid var(--ink);
-  border-radius: 14px;
-  background: var(--paper);
-  color: var(--ink);
-  box-shadow: 0 3px 0 var(--ink);
-  font-size: 25px;
-  font-weight: 800;
+.mobile-stick, .mobile-controls .mobile-button {
+  position: relative;
+  border: 2px solid var(--game-line);
+  border-radius: 50%;
+  background: var(--game-surface);
+  box-shadow: inset 0 0 0 6px rgb(255 255 255 / .06), 0 2px 12px rgb(0 0 0 / .12);
+  color: #fff;
   pointer-events: auto;
   touch-action: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
 }
-.mobile-actions .mobile-button { font-size: 14px; }
-.mobile-controls .mobile-button.held { background: var(--paper-2); transform: translateY(3px); box-shadow: none; }
-.mobile-controls-active .hint { max-width: calc(100vw - 24px); }
-@media (max-height: 450px) {
-  .mobile-right { display: flex; align-items: flex-end; gap: 8px; }
-  .mobile-actions { flex-direction: column; }
+.mobile-stick {
+  width: 126px;
+  height: 126px;
+  cursor: grab;
 }
-.mobile-controls-active .chat { bottom: calc(180px + env(safe-area-inset-bottom)); }
-.mobile-controls-active .hint { bottom: calc(232px + env(safe-area-inset-bottom)); }
+.mobile-stick.held { border-color: rgb(255 255 255 / .8); cursor: grabbing; }
+.mobile-stick-thumb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  transform: translate(calc(-50% + var(--stick-x, 0px)), calc(-50% + var(--stick-y, 0px)));
+  border: 2px solid rgb(255 255 255 / .65);
+  border-radius: 50%;
+  background: rgb(255 255 255 / .2);
+  box-shadow: 0 3px 9px rgb(0 0 0 / .16);
+  font: 32px/1 sans-serif;
+  pointer-events: none;
+}
+.mobile-stick.held .mobile-stick-thumb { background: rgb(255 255 255 / .38); }
+.mobile-stick-directions { position: absolute; top: 4px; left: 0; right: 0; text-align: center; color: rgb(255 255 255 / .5); font: 24px/1 sans-serif; }
+.mobile-stick-label { position: absolute; bottom: 10px; left: 0; right: 0; text-align: center; font: 700 8px/1 sans-serif; letter-spacing: .14em; color: rgb(255 255 255 / .75); pointer-events: none; }
+.mobile-right { display: grid; justify-items: end; gap: 12px; }
+.mobile-right .mobile-stick { width: 108px; height: 108px; }
+.mobile-actions { display: flex; gap: 12px; padding-right: 4px; }
+.mobile-controls .mobile-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  padding: 0;
+  gap: 3px;
+  cursor: pointer;
+}
+.mobile-button-icon { font: 26px/1 sans-serif; filter: grayscale(1) brightness(0) invert(1); }
+.mobile-button-label { font: 700 8px/1 sans-serif; letter-spacing: .08em; }
+.mobile-controls .mobile-button.held { background: rgb(255 255 255 / .3); border-color: #fff; }
+.mobile-controls-active .hint { bottom: calc(246px + env(safe-area-inset-bottom)); max-width: calc(100vw - 24px); }
+.mobile-controls-active .chat { bottom: calc(194px + env(safe-area-inset-bottom)); }
 .mobile-controls-active .crosshair .look-hint { display: none; }
-@media (max-height: 450px) {
-  .mobile-controls-active .chat { bottom: calc(118px + env(safe-area-inset-bottom)); }
-  .mobile-controls-active .hint { bottom: calc(172px + env(safe-area-inset-bottom)); }
+@media (max-width: 350px) {
+  #hud > .mobile-controls { left: max(12px, env(safe-area-inset-left)); right: max(12px, env(safe-area-inset-right)); }
+  .mobile-stick { width: 114px; height: 114px; }
+}
+@media (orientation: landscape) {
+  #hud > .mobile-controls { left: max(24px, env(safe-area-inset-left)); right: max(24px, env(safe-area-inset-right)); bottom: max(18px, env(safe-area-inset-bottom)); }
+  .mobile-right { display: flex; align-items: flex-end; gap: 20px; }
+  .mobile-actions { flex-direction: column; gap: 12px; padding: 0 0 4px; }
+  .mobile-controls-active .chat { bottom: calc(156px + env(safe-area-inset-bottom)); }
+  .mobile-controls-active .hint { bottom: calc(206px + env(safe-area-inset-bottom)); }
 }
