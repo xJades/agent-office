@@ -362,6 +362,8 @@ deploy/coolify.sh ssh 'node /opt/agent-office/bin/agent-office.js accounts invit
 
 ## Controls
 
+On phones and tablets, the 3D view has touch buttons for walking, turning the camera, interacting and jumping. See [touch controls](docs/controls.md) for details.
+
 | Key | Action |
 | --- | --- |
 | W A S D | Walk (hold Shift to run) |

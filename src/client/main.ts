@@ -25,6 +25,7 @@ import { installArrival } from './core/arrival';
 import { installMaps } from './core/maps';
 import { installHintBar } from './core/hintbar';
 import { installKeyboard, installKeyGuards } from './input/keyboard';
+import { installMobileControls } from './features/mobile';
 import { installFocus } from './input/focus';
 import { installPointer } from './input/pointer';
 import { installArcade } from './features/arcade';
@@ -179,6 +180,7 @@ installChat(ctx);
 parts.talk = installVoice(ctx, { tv: parts.tv });
 installDictation(ctx);
 parts.hud = installHud(ctx, core, parts);
+installMobileControls(ctx);
 
 // ---- Main loop ---------------------------------------------------------------------------------------
 fitWindow(ctx);
