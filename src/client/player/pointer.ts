@@ -32,7 +32,9 @@ export abstract class PlayerInput {
    */
   onClick: ((ndc: THREE.Vector2) => void) | null = null;
   protected keys = new Set<string>();
-  private drag: { x: number; y: number; moved: number } | null = null;
+  private physicalKeys = new Set<string>();
+  private virtualKeys = new Set<string>();
+  private drag: { id: number; x: number; y: number; moved: number } | null = null;
   /** Set when this browser won't lock the pointer; first person falls back to drag-to-look. */
   private lockFailed = false;
   private lockPending = false;
@@ -64,12 +66,17 @@ export abstract class PlayerInput {
   constructor(private dom: HTMLElement) {
     window.addEventListener('keydown', (e) => {
       if (!this.enabled || isTyping(e)) return;
+      (e.isTrusted ? this.physicalKeys : this.virtualKeys).add(e.code);
       this.keys.add(e.code);
       if (e.code === 'Space') e.preventDefault();
     });
-    window.addEventListener('keyup', (e) => this.keys.delete(e.code));
+    window.addEventListener('keyup', (e) => {
+      (e.isTrusted ? this.physicalKeys : this.virtualKeys).delete(e.code);
+      if (!this.physicalKeys.has(e.code) && !this.virtualKeys.has(e.code)) this.keys.delete(e.code);
+    });
     window.addEventListener('blur', () => {
-      this.keys.clear();
+      this.clearKeys();
+      this.drag = null;
       this.escDownAt = 0;
       this.lockOnEscUp = false;
     });
@@ -92,8 +99,8 @@ export abstract class PlayerInput {
     );
 
     dom.addEventListener('pointerdown', (e) => {
-      if (!this.enabled) return;
-      if (this.view === 'first' && e.pointerType === 'mouse' && !this.lockFailed) {
+      if (!this.enabled || this.drag) return;
+      if (this.view === 'first' && e.pointerType === 'mouse' && this.canLock) {
         if (this.locked) {
           if (e.button === 0) this.onClick?.(CENTER);
           return;
@@ -101,10 +108,11 @@ export abstract class PlayerInput {
         this.lock();
       }
       // Drag to orbit (third person) or to look around (first person without pointer lock).
-      this.drag = { x: e.clientX, y: e.clientY, moved: 0 };
+      this.drag = { id: e.pointerId, x: e.clientX, y: e.clientY, moved: 0 };
     });
     window.addEventListener('pointerup', (e) => {
       const d = this.drag;
+      if (!d || d.id !== e.pointerId) return;
       this.drag = null;
       // A click that captured the mouse is not also a click on the world.
       if (!d || d.moved > 5 || !this.enabled || this.locked || this.lockPending || e.target !== dom) return;
@@ -113,6 +121,9 @@ export abstract class PlayerInput {
         const r = dom.getBoundingClientRect();
         this.onClick?.(new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1));
       }
+    });
+    window.addEventListener('pointercancel', (e) => {
+      if (this.drag?.id === e.pointerId) this.drag = null;
     });
     window.addEventListener('pointermove', (e) => {
       const now = performance.now();
@@ -132,7 +143,7 @@ export abstract class PlayerInput {
         this.look(clamp(e.movementX) * LOOK_SPEED, clamp(e.movementY) * LOOK_SPEED);
         return;
       }
-      if (!this.drag) return;
+      if (!this.drag || this.drag.id !== e.pointerId || !this.enabled) return;
       const dx = e.clientX - this.drag.x;
       const dy = e.clientY - this.drag.y;
       this.drag.x = e.clientX;
@@ -185,7 +196,7 @@ export abstract class PlayerInput {
 
   /** Whether clicking the scene will capture the mouse for looking around. */
   get canLock(): boolean {
-    return this.view === 'first' && !this.lockFailed && typeof this.dom.requestPointerLock === 'function';
+    return this.view === 'first' && !this.lockFailed && !window.matchMedia?.('(pointer: coarse)').matches && typeof this.dom.requestPointerLock === 'function';
   }
 
   unlock() {
@@ -209,6 +220,8 @@ export abstract class PlayerInput {
   }
 
   clearKeys() {
+    this.physicalKeys.clear();
+    this.virtualKeys.clear();
     this.keys.clear();
   }
 

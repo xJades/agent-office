@@ -2,6 +2,8 @@
 
 Back to the [README](../README.md).
 
+On touch screens, the 3D view shows translucent game controls. Drag the left joystick to walk, including diagonally, and the right joystick to turn or look up and down. Slide between directions without lifting your thumb; releasing a joystick returns it to neutral. Use both thumbs to move and look together. **Usar** interacts (E), and **Saltar** jumps (Space). Dragging the scene still looks around. Controls release when a finger is lifted or cancelled, the app loses focus, or a window opens. They hide while a window is open or you are typing.
+
 | Key | Action |
 | --- | --- |
 | W A S D / arrows | Walk (hold Shift to run); on the ladder, W and S climb; in a car, W is the gas, S brakes and reverses, A and D steer |
@@ -33,7 +35,7 @@ Back to the [README](../README.md).
 
 You can also click a nearby desk to interact with it, or click a worker in the Workers panel (**🤖 Workers**, top right) to open its terminal.
 
-On a phone, use the 2D view at `/lite` instead: a terminal there has a row of keys under it (**1** **2** **3**, the arrows, Enter, Tab, Esc, Ctrl+C) and a box to send a prompt. See [Features](features.md).
+On a phone, the 3D view has touch controls, and the 2D view at `/lite` offers direct access to workers and boards: a terminal there has a row of keys under it (**1** **2** **3**, the arrows, Enter, Tab, Esc, Ctrl+C) and a box to send a prompt. See [Features](features.md).
 
 ## In a terminal
 
